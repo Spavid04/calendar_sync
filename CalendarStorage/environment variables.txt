@@ -1,0 +1,10 @@
+﻿NAME		TYPE		DEFAULT VALUE		DESCRIPTION
+
+CALAPI_DB_PATH		string		./storage.db		path to the sqlite database
+CALAPI_CLEANUP_INTERVAL		int		3600		interval in seconds at which to run cleanup tasks; -1 will disable periodic cleanups
+CALAPI_MAX_PARTIAL_SS		int		10		how many partial snapshots is an owner allowed to have at any time
+CALAPI_MAX_FULL_SS		int		1		how many full snapshots is an owner allowed to have at any time
+CALAPI_MAX_SS_AGE		int		86400		age in seconds at which a snapshot will be deleted
+CALAPI_DELETE_EMPTY_OWNERS		bool		true		control whether owners without any snapshots get cleaned up if they haven't been seen in a long time
+CALAPI_MAX_PAYLOAD_LENGTH		int		4194304		the max (approximate) size in bytes of an allowed binary payload
+CALAPI_INCOMING_BINARY_LOCKING		bool		true		control whether incoming binary data is "rate"-controlled in order to save memory; recommended on low memory devices
