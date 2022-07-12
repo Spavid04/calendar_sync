@@ -1,12 +1,13 @@
-﻿using Isopoh.Cryptography.Argon2;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Newtonsoft.Json;
 
-namespace CalendarExport
+namespace CalendarSyncCommons
 {
     public class ServerInterface : IDisposable
     {
@@ -80,6 +81,17 @@ namespace CalendarExport
             return sb.ToString();
         }
 
+        public bool Authenticate()
+        {
+            string url = this.GetQueryUrl("Authenticate",
+                ("ownerName", this.OwnerName),
+                ("passphraseHash", this.PassphraseHash)
+            );
+            var response = this.Client.GetAsync(url).Result;
+
+            return response.IsSuccessStatusCode;
+        }
+
         public bool AuthenticateOrCreate()
         {
             string url = this.GetQueryUrl("ReserveName",
@@ -117,6 +129,44 @@ namespace CalendarExport
             var response = this.Client.PostAsync(url, sc).Result;
 
             return response.IsSuccessStatusCode;
+        }
+
+        public List<ServerModels.AvailableSnapshot> GetAvailableSnapshots()
+        {
+            string url = this.GetQueryUrl("GetAvaliableSnapshots",
+                ("ownerName", this.OwnerName),
+                ("passphraseHash", this.PassphraseHash)
+            );
+            var response = this.Client.GetAsync(url).Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return JsonConvert.DeserializeObject<List<ServerModels.AvailableSnapshot>>(
+                response.Content.ReadAsStringAsync().Result);
+        }
+
+        public Stream GetSnapshotData(int id)
+        {
+            string url = this.GetQueryUrl("GetSnapshotData",
+                ("ownerName", this.OwnerName),
+                ("passphraseHash", this.PassphraseHash),
+                ("id", id)
+            );
+            var response = this.Client.GetAsync(url).Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var ms = new MemoryStream();
+            response.Content.CopyToAsync(ms).Wait();
+
+            ms.Seek(0, SeekOrigin.Begin);
+            return ms;
         }
 
         public void Dispose()

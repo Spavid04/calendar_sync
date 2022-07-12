@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CalendarSyncCommons;
 
 namespace CalendarStorage.Data
 {
@@ -26,26 +27,20 @@ namespace CalendarStorage.Data
         [NotMapped]
         public DateTime TimestampDt
         {
-            get => DateTime.Parse(this.Timestamp);
+            get => this.Timestamp.ToDateTime();
             set => this.Timestamp = value.ToString("O");
         }
         [NotMapped]
         public DateTime? EventModifiedAt_StartDt
         {
-            get =>
-                this.EventModifiedAt_IntervalStart == null
-                    ? null
-                    : DateTime.Parse(this.EventModifiedAt_IntervalStart);
+            get => this.EventModifiedAt_IntervalStart?.ToDateTime();
             set => this.EventModifiedAt_IntervalStart = value?.ToString("O");
         }
 
         [NotMapped]
         public DateTime? EventModifiedAt_EndDt
         {
-            get =>
-                this.EventModifiedAt_IntervalEnd == null
-                    ? null
-                    : DateTime.Parse(this.EventModifiedAt_IntervalEnd);
+            get => this.EventModifiedAt_IntervalEnd?.ToDateTime();
             set => this.EventModifiedAt_IntervalEnd = value?.ToString("O");
         }
     }

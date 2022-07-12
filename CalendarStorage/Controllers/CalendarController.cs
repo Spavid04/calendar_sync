@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CalendarStorage.Data;
+using CalendarSyncCommons;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
@@ -106,6 +107,19 @@ namespace CalendarStorage.Controllers
             this.UpdateOwnerLastSeen(owner);
         }
 
+        [HttpGet]
+        public IActionResult Authenticate(string ownerName, string passphraseHash)
+        {
+            if (this.GetCheckOwner(ownerName, passphraseHash) != null)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return Unauthorized();
+            }
+        }
+
         [HttpPost]
         public IActionResult ReserveName([FromQuery] string ownerName, [FromQuery] string passphraseHash)
         {
@@ -144,8 +158,8 @@ namespace CalendarStorage.Controllers
             DateTime dtStart, dtEnd;
             try
             {
-                dtStart = DateTime.Parse(modifiedInterval_Start);
-                dtEnd = DateTime.Parse(modifiedInterval_End);
+                dtStart = modifiedInterval_Start.ToDateTime();
+                dtEnd = modifiedInterval_End.ToDateTime();
             }
             catch (Exception)
             {
@@ -177,7 +191,7 @@ namespace CalendarStorage.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ControllerModels.AvailableSnapshot>> GetAvaliableSnapshots(string ownerName, string passphraseHash)
+        public ActionResult<IEnumerable<ServerModels.AvailableSnapshot>> GetAvaliableSnapshots(string ownerName, string passphraseHash)
         {
             Owner owner;
             if ((owner = this.GetCheckOwner(ownerName, passphraseHash)) == null)
@@ -187,7 +201,7 @@ namespace CalendarStorage.Controllers
 
             this.UpdateOwnerLastSeen(owner);
 
-            var snaphsots = owner.Snapshots.Select(x => new ControllerModels.AvailableSnapshot()
+            var snaphsots = owner.Snapshots.Select(x => new ServerModels.AvailableSnapshot()
             {
                 Id = x.Id,
                 Timestamp = x.TimestampDt.ToString("O"),
@@ -218,18 +232,6 @@ namespace CalendarStorage.Controllers
             }
 
             return Ok(snapshot.DataBlob.Data);
-        }
-    }
-
-    public static class ControllerModels
-    {
-        public class AvailableSnapshot
-        {
-            public int Id { get; set; }
-            public string Timestamp { get; set; }
-            public string SnapshotType { get; set; }
-            public string EventModifiedAt_IntervalStart { get; set; }
-            public string EventModifiedAt_IntervalEnd { get; set; }
         }
     }
 }

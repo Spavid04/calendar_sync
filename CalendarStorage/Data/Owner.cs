@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CalendarSyncCommons;
 
 namespace CalendarStorage.Data
 {
@@ -21,7 +22,7 @@ namespace CalendarStorage.Data
         [NotMapped]
         public DateTime LastSeenDt
         {
-            get => DateTime.Parse(this.LastSeen);
+            get => this.LastSeen.ToDateTime();
             set => this.LastSeen = value.ToString("O");
         }
     }

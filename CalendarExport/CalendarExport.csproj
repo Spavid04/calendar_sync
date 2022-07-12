@@ -9,8 +9,11 @@
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Ical.Net" Version="4.2.0" />
-    <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.12" />
     <PackageReference Include="Microsoft.Office.Interop.Outlook" Version="15.0.4797.1004" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CalendarSyncCommons\CalendarSyncCommons.csproj" />
   </ItemGroup>
 
   <ItemGroup>

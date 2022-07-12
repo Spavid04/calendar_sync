@@ -5,21 +5,21 @@ namespace CalendarExport
 {
     public class CalendarExportArguments
     {
-        [Option("storage-url", Group = "storage", HelpText = "URL to a calendar storage server. HTTPS recommended.")]
+        [Option("storage-url", Group = "storage", Default = null, HelpText = "URL to a calendar storage server. HTTPS recommended.")]
         public string StorageUrl { get; set; }
 
-        [Option("storage-dir", Group = "storage", HelpText = "Path to a calendar storage directory.")]
+        [Option("storage-directory", Group = "storage", Default = null, HelpText = "Path to a calendar storage directory.")]
         public string StorageDirectory { get; set; }
 
 
-        [Option("owner-name", Required = true, HelpText = "Unique name to used identify snapshots.")]
+        [Option("owner-name", Required = false, HelpText = "Unique name to used identify snapshots.")]
         public string OwnerName { get; set; }
 
 
-        [Option("server-passphrase", Group = "serverpassphrase", Default = null, HelpText = "Passphrase used to rw-protect serverside data.")]
+        [Option("server-passphrase", Required = false, Default = null, HelpText = "Passphrase used to rw-protect serverside data.")]
         public string ServerPassphrase { get; set; }
 
-        [Option("server-passphrase-file", Group = "serverpassphrase", Default = null, HelpText = "Read the server passphrase from the specified file.")]
+        [Option("server-passphrase-file", Required = false, Default = null, HelpText = "Read the server passphrase from the specified file.")]
         public string ServerPassphraseFile { get; set; }
 
         [Option("encryption-password", Required = false, Default = null, HelpText = "Encrypt the outgoing snapshot with the specified password. Highly recommended.")]
@@ -59,11 +59,26 @@ namespace CalendarExport
         public bool Validate()
         {
             // why must the best command line parser be in python 😭
-            
-            if (this.ServerPassphrase != null && this.ServerPassphraseFile != null)
+
+            if (this.StorageUrl != null)
             {
-                Console.WriteLine("Cannot use --encryption-password and --encryption-password-file together!");
-                return false;
+                if (this.OwnerName == null)
+                {
+                    Console.WriteLine("--owner-name is required when using a storage server.");
+                    return false;
+                }
+
+                if (this.ServerPassphrase == null && this.ServerPassphraseFile == null)
+                {
+                    Console.WriteLine("Either --server-passphrase or *-file must be specified when using a storage server!");
+                    return false;
+                }
+
+                if (this.ServerPassphrase != null && this.ServerPassphraseFile != null)
+                {
+                    Console.WriteLine("Cannot use --encryption-password and --encryption-password-file together!");
+                    return false;
+                }
             }
 
             if (this.EncryptionPassword != null && this.EncryptionPasswordFile != null)

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.Text.RegularExpressions;
-using Isopoh.Cryptography.Argon2;
-using Isopoh.Cryptography.SecureArray;
 
 namespace CalendarExport
 {
@@ -56,27 +53,6 @@ namespace CalendarExport
             }
 
             return true;
-        }
-
-        public static string HashString(string input)
-        {
-            var config = new Argon2Config()
-            {
-                Type = Argon2Type.DataIndependentAddressing,
-                Version = Argon2Version.Nineteen,
-                TimeCost = 8,
-                Password = Encoding.UTF8.GetBytes(input),
-                Salt = Encoding.ASCII.GetBytes("-nosalt-"), // 🤫
-                Secret = null,
-                AssociatedData = null,
-                HashLength = 64
-            };
-            var argon2 = new Argon2(config);
-
-            using (SecureArray<byte> hash = argon2.Hash())
-            {
-                return config.EncodeString(hash.Buffer);
-            }
         }
     }
 }

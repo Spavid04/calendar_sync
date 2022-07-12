@@ -4,6 +4,7 @@ using Ionic.Zlib;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CalendarSyncCommons;
 
 namespace CalendarExport
 {
@@ -184,7 +185,7 @@ namespace CalendarExport
 
             try
             {
-                return DateTime.Parse(File.ReadAllText(path));
+                return File.ReadAllText(path).ToDateTime();
             }
             catch (Exception)
             {

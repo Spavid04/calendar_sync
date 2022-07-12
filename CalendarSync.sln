@@ -10,8 +10,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Exporter Side", "Exporter Side", "{43816402-BDB9-4626-B204-8B9EB5CEE1E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarSync.Android", "CalendarSync\CalendarSync.Android\CalendarSync.Android.csproj", "{3BF50922-D1DE-411F-9CBB-2A45997D8BFA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1CEF585-A875-4C83-871D-1FFBA37B994D} = {B1CEF585-A875-4C83-871D-1FFBA37B994D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarSync.iOS", "CalendarSync\CalendarSync.iOS\CalendarSync.iOS.csproj", "{B4FA2F23-FCC9-45D2-A182-8F5B1A4EC641}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1CEF585-A875-4C83-871D-1FFBA37B994D} = {B1CEF585-A875-4C83-871D-1FFBA37B994D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarSync", "CalendarSync\CalendarSync\CalendarSync.csproj", "{92A3BBE0-8030-44A4-8746-1EF2D18F17B9}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -21,8 +27,20 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage side", "Storage side", "{F73224F8-E90E-428F-AA1D-4BD77A485F61}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarStorage", "CalendarStorage\CalendarStorage.csproj", "{56E61B46-21A5-4D1E-BFA1-7F934BCDFB51}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB9A6385-01D2-4272-859A-957F8B822DAA} = {BB9A6385-01D2-4272-859A-957F8B822DAA}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarExport", "CalendarExport\CalendarExport.csproj", "{28992430-080E-4093-BA55-2CBE6F1F47B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarExport", "CalendarExport\CalendarExport.csproj", "{28992430-080E-4093-BA55-2CBE6F1F47B2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB9A6385-01D2-4272-859A-957F8B822DAA} = {BB9A6385-01D2-4272-859A-957F8B822DAA}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commons", "Commons", "{F22E0868-ED3C-4C35-A716-77E2CC0B7E86}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarSyncCommons", "CalendarSyncCommons\CalendarSyncCommons.csproj", "{BB9A6385-01D2-4272-859A-957F8B822DAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testbench", "testbench\testbench.csproj", "{8C662AF6-8521-4842-B278-4B45E920085A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +128,30 @@ Global
 		{28992430-080E-4093-BA55-2CBE6F1F47B2}.Release|iPhone.Build.0 = Release|Any CPU
 		{28992430-080E-4093-BA55-2CBE6F1F47B2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{28992430-080E-4093-BA55-2CBE6F1F47B2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Release|iPhone.Build.0 = Release|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{BB9A6385-01D2-4272-859A-957F8B822DAA}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Release|iPhone.Build.0 = Release|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{8C662AF6-8521-4842-B278-4B45E920085A}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +163,7 @@ Global
 		{92A3BBE0-8030-44A4-8746-1EF2D18F17B9} = {9CEC91D6-6A45-4048-A881-AB223077D203}
 		{56E61B46-21A5-4D1E-BFA1-7F934BCDFB51} = {F73224F8-E90E-428F-AA1D-4BD77A485F61}
 		{28992430-080E-4093-BA55-2CBE6F1F47B2} = {43816402-BDB9-4626-B204-8B9EB5CEE1E3}
+		{BB9A6385-01D2-4272-859A-957F8B822DAA} = {F22E0868-ED3C-4C35-A716-77E2CC0B7E86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6DE702B9-78D0-4CE1-86C0-DE57803182C1}
