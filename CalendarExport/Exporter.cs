@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using CalendarSyncCommons;
+using Ical.Net;
 
 namespace CalendarExport
 {
@@ -37,6 +38,7 @@ namespace CalendarExport
 
             DateTime fetchedAt = DateTime.Now;
             using var appointments = new DisposableAppointmentFetcher(dtStart, dtEnd);
+
             IEnumerable<Stream> icalDataStreams;
             
             if (this.Arguments.DontSanitizeIcals)
@@ -52,6 +54,19 @@ namespace CalendarExport
                     appointments
                         .SanitizeAppointments()
                         .SerializeIcals();
+            }
+
+            if (this.Arguments.SingleFile)
+            {
+                IEnumerable<Calendar> deserialized = icalDataStreams.DeserializeIcals();
+
+                var calendar = new Calendar();
+                foreach (var cal in deserialized)
+                {
+                    calendar.Events.AddRange(cal.Events);
+                }
+
+                icalDataStreams = new[] { calendar }.SerializeIcals();
             }
 
             string encryptionPassword;
