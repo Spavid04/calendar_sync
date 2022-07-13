@@ -55,6 +55,9 @@ namespace CalendarExport
         [Option("certificate-path", Required = false, Default = null, HelpText = "Path to a self-signed certificate in case the HTTPS server URL uses a custom one.")]
         public string CertificatePath { get; set; }
 
+        [Option("ca-certificate-path", Required = false, Default = null, HelpText = "Path to a self-signed root certificate in case the HTTPS server URL uses a custom one.")]
+        public string CACertificatePath { get; set; }
+
         [Option("single-file", Required = false, Default = false, HelpText = "Combine all events into a single iCal calendar.")]
         public bool SingleFile { get; set; }
 

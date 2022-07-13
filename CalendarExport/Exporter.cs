@@ -127,7 +127,7 @@ namespace CalendarExport
                 }
 
                 using var serverInterface = new ServerInterface(this.Arguments.StorageUrl, this.Arguments.OwnerName,
-                    serverPassphrase, this.Arguments.HashName, this.Arguments.CertificatePath);
+                    serverPassphrase, this.Arguments.HashName, this.Arguments.CertificatePath, this.Arguments.CACertificatePath);
 
                 if (!serverInterface.AuthenticateOrCreate())
                 {
