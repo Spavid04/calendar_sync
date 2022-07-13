@@ -65,7 +65,7 @@ namespace CalendarExport.Processors
             }
 
             evt.Summary = appointment.Subject;
-            evt.Description = RemoveLinks(appointment.Body);
+            evt.Description = RemoveLinks(appointment.Body) ?? ""; // some ical parsers don't like this being null
             evt.Location = appointment.Location;
             if (appointment.Categories != null)
             {
@@ -97,6 +97,11 @@ namespace CalendarExport.Processors
 
         private static string RemoveLinks(string text)
         {
+            if(text == null)
+            {
+                return null;
+            }
+
             const string urlPattern =
                 @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)";
             Regex urlRegex = new Regex(urlPattern,
@@ -168,7 +173,6 @@ namespace CalendarExport.Processors
                     pattern.Until = (oRecurrence.PatternEndDate.Date + oRecurrence.EndTime.TimeOfDay).ToUniversalTime();
                 }
             }
-            
 
             return new List<RecurrencePattern>() { pattern };
         }
