@@ -45,6 +45,12 @@ namespace CalendarExport
         [Option("partial-end", SetName = "partial", Default = "now", HelpText = "Partial snapshot \"event modified at\"-until. Allows relative times with \"now-x[wdhm]\".")]
         public string PartialSnapshotEnd { get; set; }
 
+        [Option("partial-by-edate", SetName = "partial", Default = false, HelpText = "By default, CalendarExport exports partial events filtered by their modification date. This option changes it to event start date.")]
+        public bool PartialByEventDate { get; set; }
+
+        [Option("include-recurrences", SetName = "partial", Default = false, HelpText = "Include event recurrences as separate events. Use with --partial-by-cdate")]
+        public bool IncludeRecurrences { get; set; }
+
 
         [Option("no-sanitize-icals", Required = false, Default = false, HelpText = "Don't strip possibly sensitive info from the iCal files. Use with extreme caution.")]
         public bool DontSanitizeIcals { get; set; }
@@ -96,6 +102,12 @@ namespace CalendarExport
             if ((this.FullSnapshot || this.PartialSnapshot) == false)
             {
                 Console.WriteLine("Either --full or --partial must be specified!");
+                return false;
+            }
+
+            if (this.PartialSnapshot && this.IncludeRecurrences && !this.PartialByEventDate)
+            {
+                Console.WriteLine("--include-recurrences must be used with --partial-by-edate!");
                 return false;
             }
 

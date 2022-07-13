@@ -37,7 +37,11 @@ namespace CalendarExport
             }
 
             DateTime fetchedAt = DateTime.Now;
-            using var appointments = new DisposableAppointmentFetcher(dtStart, dtEnd);
+            using var appointments = new DisposableAppointmentFetcher(dtStart, dtEnd,
+                this.Arguments.PartialByEventDate
+                    ? DisposableAppointmentFetcher.FilterBy.EventDate
+                    : DisposableAppointmentFetcher.FilterBy.ModifiedDate,
+                this.Arguments.IncludeRecurrences);
 
             IEnumerable<Stream> icalDataStreams;
             
@@ -52,7 +56,7 @@ namespace CalendarExport
             {
                 icalDataStreams =
                     appointments
-                        .SanitizeAppointments()
+                        .SanitizeAppointments(!this.Arguments.IncludeRecurrences)
                         .SerializeIcals();
             }
 

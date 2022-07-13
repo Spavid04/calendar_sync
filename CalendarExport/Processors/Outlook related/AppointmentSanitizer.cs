@@ -14,10 +14,12 @@ namespace CalendarExport.Processors
     public class AppointmentSanitizer : IEnumerable<Calendar>
     {
         private readonly IEnumerable<Outlook.AppointmentItem> Appointments;
+        private readonly bool AddRecurrenceRules;
 
-        public AppointmentSanitizer(IEnumerable<Outlook.AppointmentItem> appointments)
+        public AppointmentSanitizer(IEnumerable<Outlook.AppointmentItem> appointments, bool addRecurrenceRules = true)
         {
             this.Appointments = appointments;
+            this.AddRecurrenceRules = addRecurrenceRules;
         }
 
         public IEnumerator<Calendar> GetEnumerator()
@@ -43,9 +45,10 @@ namespace CalendarExport.Processors
             evt.DtStart = new CalDateTime(appointment.StartUTC);
             evt.DtEnd = new CalDateTime(appointment.EndUTC);
             evt.IsAllDay = appointment.AllDayEvent;
+            evt.Created = new CalDateTime(appointment.CreationTime.ToUniversalTime());
             evt.LastModified = new CalDateTime(appointment.LastModificationTime.ToUniversalTime());
 
-            if (appointment.RecurrenceState != Outlook.OlRecurrenceState.olApptNotRecurring)
+            if (appointment.RecurrenceState == Outlook.OlRecurrenceState.olApptMaster)
             {
                 evt.RecurrenceRules = ConvertRecurrencePatterns(appointment.GetRecurrencePattern());
             }

@@ -8,9 +8,9 @@ namespace CalendarExport.Processors
 {
     public static class Glue
     {
-        public static AppointmentSanitizer SanitizeAppointments(this IEnumerable<Outlook.AppointmentItem> appointments)
+        public static AppointmentSanitizer SanitizeAppointments(this IEnumerable<Outlook.AppointmentItem> appointments, bool addRecurrenceRules)
         {
-            return new AppointmentSanitizer(appointments);
+            return new AppointmentSanitizer(appointments, addRecurrenceRules);
         }
 
         public static AppointmentIcalSaver DumpAsIcals(this IEnumerable<Outlook.AppointmentItem> items, string directory)
