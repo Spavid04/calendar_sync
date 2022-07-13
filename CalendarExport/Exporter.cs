@@ -154,7 +154,11 @@ namespace CalendarExport
             }
 
             // *everything* went smoothly
-            SetLastRun(fetchedAt);
+
+            if (this.Arguments.PartialSinceLastRun)
+            {
+                SetLastRun(fetchedAt);
+            }
 
             return true;
         }
@@ -188,15 +192,13 @@ namespace CalendarExport
 
         private static void SetLastRun(DateTime dt)
         {
-            string executable = System.Reflection.Assembly.GetEntryAssembly().Location;
-            string path = Path.Combine(Path.GetDirectoryName(executable), "lastrun.txt");
+            string path = Path.Combine(Path.GetTempPath(), "calendarexport_lastrun.txt");
             File.WriteAllText(path, dt.ToString("O"));
         }
 
         private static DateTime? GetLastRun()
         {
-            string executable = System.Reflection.Assembly.GetEntryAssembly().Location;
-            string path = Path.Combine(Path.GetDirectoryName(executable), "lastrun.txt");
+            string path = Path.Combine(Path.GetTempPath(), "calendarexport_lastrun.txt");
 
             try
             {

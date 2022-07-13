@@ -43,6 +43,7 @@ namespace CalendarExport.Processors
             evt.DtStart = new CalDateTime(appointment.StartUTC);
             evt.DtEnd = new CalDateTime(appointment.EndUTC);
             evt.IsAllDay = appointment.AllDayEvent;
+            evt.LastModified = new CalDateTime(appointment.LastModificationTime.ToUniversalTime());
 
             if (appointment.RecurrenceState != Outlook.OlRecurrenceState.olApptNotRecurring)
             {
