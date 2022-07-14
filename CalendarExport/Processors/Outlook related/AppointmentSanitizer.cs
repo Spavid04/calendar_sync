@@ -42,11 +42,13 @@ namespace CalendarExport.Processors
 
             evt.Uid = appointment.GlobalAppointmentID;
 
-            evt.DtStart = new CalDateTime(appointment.StartUTC);
-            evt.DtEnd = new CalDateTime(appointment.EndUTC);
+            evt.DtStart = new CalDateTime(appointment.Start.ToUniversalTime());
+            evt.DtEnd = new CalDateTime(appointment.End.ToUniversalTime());
             evt.IsAllDay = appointment.AllDayEvent;
+
             evt.Created = new CalDateTime(appointment.CreationTime.ToUniversalTime());
             evt.LastModified = new CalDateTime(appointment.LastModificationTime.ToUniversalTime());
+            evt.Sequence = appointment.LastModificationTime.ToUniversalTime().ToEpochSeconds();
 
             if (appointment.RecurrenceState == Outlook.OlRecurrenceState.olApptMaster)
             {
@@ -68,13 +70,14 @@ namespace CalendarExport.Processors
                 evt.Status = "TENTATIVE";
             }
 
-            evt.Summary = appointment.Subject;
-            evt.Description = RemoveLinks(appointment.Body) ?? ""; // some ical parsers don't like this being null
-            evt.Location = appointment.Location;
+            evt.Summary = appointment.Subject.ToQuotedPrintable();
+            evt.Description = RemoveLinks(appointment.Body).ToQuotedPrintable() ?? ""; // some ical parsers don't like this being null
+            evt.Location = appointment.Location.ToQuotedPrintable();
             if (appointment.Categories != null)
             {
                 evt.Categories = appointment.Categories.Split(',',
-                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Select(x => x.ToQuotedPrintable()).ToList();
             }
 
             evt.Organizer = new Organizer()
@@ -102,7 +105,7 @@ namespace CalendarExport.Processors
 
         private static string RemoveLinks(string text)
         {
-            if(text == null)
+            if (text == null)
             {
                 return null;
             }
