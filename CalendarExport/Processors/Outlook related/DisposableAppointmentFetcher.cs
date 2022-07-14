@@ -8,6 +8,12 @@ namespace CalendarExport.Processors
 {
     public class DisposableAppointmentFetcher : IDisposable, IEnumerable<Outlook.AppointmentItem>
     {
+        public enum FilterBy
+        {
+            ModifiedDate,
+            EventDate
+        }
+
         private readonly Outlook.Application Application;
         private readonly Outlook.NameSpace MapiNamespace;
         private readonly Outlook.MAPIFolder CalendarFolder;
@@ -16,6 +22,8 @@ namespace CalendarExport.Processors
         private readonly DateTime To;
         private readonly FilterBy FilterType;
         private readonly bool IncludeRecurrences;
+
+        private Outlook.Items Items;
 
         public DisposableAppointmentFetcher(DateTime from, DateTime to, FilterBy filterType = FilterBy.ModifiedDate, bool includeRecurrences = false)
         {
@@ -27,22 +35,26 @@ namespace CalendarExport.Processors
             this.To = to.ToLocalTime();
             this.FilterType = filterType;
             this.IncludeRecurrences = includeRecurrences;
+
+            this.Items = this.CalendarFolder.Items;
+            this.ApplyFilters();
         }
+
+        public delegate void ProgressCallbackHandler(Outlook.AppointmentItem item);
+        public event ProgressCallbackHandler Progress;
 
         public IEnumerator<Outlook.AppointmentItem> GetEnumerator()
         {
-            Outlook.Items items = this.CalendarFolder.Items;
-            this.ApplyFilters(items);
-
-            foreach (Outlook.AppointmentItem item in items)
+            foreach (Outlook.AppointmentItem item in this.Items)
             {
+                this.Progress?.Invoke(item);
                 yield return item;
             }
         }
 
-        private void ApplyFilters(Outlook.Items items)
+        private void ApplyFilters()
         {
-            items.IncludeRecurrences = this.IncludeRecurrences;
+            this.Items.IncludeRecurrences = this.IncludeRecurrences;
 
             string field = this.FilterType switch
             {
@@ -54,7 +66,23 @@ namespace CalendarExport.Processors
             string from = this.From.ToString("O");
             string to = this.To.ToString("O");
             string query = $"[{field}] >= \"{from}\" and [{field}] <= \"{to}\"";
-            items.Restrict(query);
+            this.Items.Restrict(query);
+        }
+
+        public bool TryGetCount(out int count)
+        {
+            count = 0;
+            if (this.IncludeRecurrences)
+            {
+                return false;
+            }
+            if (this.Items == null)
+            {
+                return false;
+            }
+
+            count = this.Items.Count;
+            return true;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -65,12 +93,6 @@ namespace CalendarExport.Processors
         public void Dispose()
         {
             this.MapiNamespace.Logoff();
-        }
-
-        public enum FilterBy
-        {
-            ModifiedDate,
-            EventDate
         }
     }
 }

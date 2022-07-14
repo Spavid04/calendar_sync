@@ -16,6 +16,11 @@ namespace CalendarExport
         public Exporter(CalendarExportArguments arguments)
         {
             this.Arguments = arguments;
+
+            if (this.Arguments.StorageDirectory != null)
+            {
+                Directory.CreateDirectory(this.Arguments.StorageDirectory);
+            }
         }
 
         public bool DoMagic()
@@ -37,25 +42,50 @@ namespace CalendarExport
             }
 
             DateTime fetchedAt = DateTime.Now;
-            using var appointments = new DisposableAppointmentFetcher(dtStart, dtEnd,
+            using var appointmentCollection = new DisposableAppointmentFetcher(dtStart, dtEnd,
                 this.Arguments.PartialByEventDate
                     ? DisposableAppointmentFetcher.FilterBy.EventDate
                     : DisposableAppointmentFetcher.FilterBy.ModifiedDate,
                 this.Arguments.IncludeRecurrences);
+
+            int progress = 0;
+            int count = 0;
+            if (appointmentCollection.TryGetCount(out count))
+            {
+                Console.WriteLine($"Fetching {count} events...");
+            }
+            else
+            {
+                Console.WriteLine("Fetching an unknown number of events...");
+            }
+            appointmentCollection.Progress += (item =>
+            {
+                progress++;
+
+                string sdt = item.Start.ToShortDateString();
+                int titleLength = item.Subject.Length;
+                string title = item.Subject.Substring(0, Math.Min(titleLength, 30));
+                if (titleLength > 30)
+                {
+                    title += "...";
+                }
+
+                Console.WriteLine($"{progress}/{count}\t{sdt}\t{title}");
+            });
 
             IEnumerable<Stream> icalDataStreams;
             
             if (this.Arguments.DontSanitizeIcals)
             {
                 icalDataStreams =
-                    appointments
+                    appointmentCollection
                         .DumpAsIcals(GetATempDirectory())
                         .ReadFiles();
             }
             else
             {
                 icalDataStreams =
-                    appointments
+                    appointmentCollection
                         .SanitizeAppointments(!this.Arguments.IncludeRecurrences)
                         .SerializeIcals();
             }
@@ -81,11 +111,6 @@ namespace CalendarExport
                 return false;
             }
 
-            if (this.Arguments.StorageDirectory != null)
-            {
-                Directory.CreateDirectory(this.Arguments.StorageDirectory);
-            }
-
             MemoryStream zfStream = new MemoryStream();
             using (var zf = new ZipFile())
             {
@@ -105,12 +130,14 @@ namespace CalendarExport
 
                     if (this.Arguments.StorageDirectory != null)
                     {
-                        using (var fs = new FileStream(Path.Combine(this.Arguments.StorageDirectory, filename),
-                                   FileMode.Create, FileAccess.Write, FileShare.Read))
+                        string path = Path.Combine(this.Arguments.StorageDirectory, filename);
+                        using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read))
                         {
                             stream.CopyTo(fs);
                             stream.Seek(0, SeekOrigin.Begin);
                         }
+
+                        Console.WriteLine($"Dumped to {path}");
                     }
                     zf.AddEntry(filename, stream);
 
@@ -123,6 +150,8 @@ namespace CalendarExport
 
             if (this.Arguments.StorageUrl != null)
             {
+                Console.WriteLine("Uploading to server...");
+
                 string serverPassphrase;
                 if (!GetServerPassphrase(out serverPassphrase))
                 {
@@ -155,6 +184,8 @@ namespace CalendarExport
                     Console.WriteLine("Failed to upload snapshot!");
                     return false;
                 }
+
+                Console.WriteLine("Upload ok!");
             }
 
             // *everything* went smoothly
