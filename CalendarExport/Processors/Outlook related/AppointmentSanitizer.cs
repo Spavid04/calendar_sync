@@ -90,8 +90,9 @@ namespace CalendarExport.Processors
                 evt.Attendees.Add(new Attendee()
                 {
                     CommonName = recipient.Name,
-                    Encoding = "UTF-8",
-                    Role = requiredRecipients.Contains(recipient.Name) ? "REQ-PARTICIPANT" : "OPT-PARTICIPANT"
+                    Role = requiredRecipients.Contains(recipient.Name) ? "REQ-PARTICIPANT" : "OPT-PARTICIPANT",
+                    Rsvp = false,
+                    Encoding = "UTF-8"
                 });
             }
 

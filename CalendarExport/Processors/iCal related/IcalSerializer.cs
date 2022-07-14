@@ -23,7 +23,7 @@ namespace CalendarExport.Processors
             foreach (var calendar in this.Calendars)
             {
                 var ms = new MemoryStream();
-                serializer.Serialize(calendar, ms, Encoding.UTF8);
+                serializer.Serialize(calendar, ms, new UTF8Encoding(false));
                 ms.Seek(0, SeekOrigin.Begin);
 
                 yield return ms;
