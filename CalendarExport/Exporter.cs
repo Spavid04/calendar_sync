@@ -46,7 +46,8 @@ namespace CalendarExport
                 this.Arguments.PartialByEventDate
                     ? DisposableAppointmentFetcher.FilterBy.EventDate
                     : DisposableAppointmentFetcher.FilterBy.ModifiedDate,
-                this.Arguments.IncludeRecurrences);
+                this.Arguments.IncludeRecurrences,
+                this.Arguments.FilterString);
 
             int progress = 0;
             int count = 0;

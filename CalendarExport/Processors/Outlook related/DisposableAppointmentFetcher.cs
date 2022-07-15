@@ -22,10 +22,12 @@ namespace CalendarExport.Processors
         private readonly DateTime To;
         private readonly FilterBy FilterType;
         private readonly bool IncludeRecurrences;
+        private readonly string ExtraFilters;
 
         private Outlook.Items Items;
 
-        public DisposableAppointmentFetcher(DateTime from, DateTime to, FilterBy filterType = FilterBy.ModifiedDate, bool includeRecurrences = false)
+        public DisposableAppointmentFetcher(DateTime from, DateTime to, FilterBy filterType = FilterBy.ModifiedDate,
+            bool includeRecurrences = false, string extraFilters = null)
         {
             this.Application = new Outlook.Application();
             this.MapiNamespace = this.Application.GetNamespace("MAPI");
@@ -35,6 +37,7 @@ namespace CalendarExport.Processors
             this.To = to.ToLocalTime();
             this.FilterType = filterType;
             this.IncludeRecurrences = includeRecurrences;
+            this.ExtraFilters = extraFilters;
 
             this.Items = this.CalendarFolder.Items;
             this.ApplyFilters();
@@ -66,6 +69,12 @@ namespace CalendarExport.Processors
             string from = this.From.ToString("O");
             string to = this.To.ToString("O");
             string query = $"[{field}] >= \"{from}\" and [{field}] <= \"{to}\"";
+
+            if (!string.IsNullOrEmpty(this.ExtraFilters))
+            {
+                query += $" and ({this.ExtraFilters})";
+            }
+
             this.Items.Restrict(query);
         }
 

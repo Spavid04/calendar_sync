@@ -11,7 +11,7 @@ namespace CalendarSyncCommons
         {
             var config = new Argon2Config()
             {
-                Type = Argon2Type.DataIndependentAddressing,
+                Type = Argon2Type.DataDependentAddressing,
                 Version = Argon2Version.Nineteen,
                 TimeCost = 8,
                 Password = Encoding.UTF8.GetBytes(input),

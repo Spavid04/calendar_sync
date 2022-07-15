@@ -67,6 +67,9 @@ namespace CalendarExport
         [Option("single-file", Required = false, Default = false, HelpText = "Combine all events into a single iCal calendar.")]
         public bool SingleFile { get; set; }
 
+        [Option("filter-string", Required = false, Default = null, HelpText = "Extra filter string to be passed to Outlook. Uses Outlook query syntax.")]
+        public string FilterString { get; set; }
+
 
         public bool Validate()
         {
