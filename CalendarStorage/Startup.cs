@@ -21,6 +21,7 @@ namespace CalendarStorage
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddDbContext<CalendarStoreContext>()
                 .AddHostedService<PeriodicCleanup>()
                 .AddControllers(options =>
                 {
@@ -39,7 +40,7 @@ namespace CalendarStorage
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();

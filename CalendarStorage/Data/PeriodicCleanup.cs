@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,9 +12,9 @@ namespace CalendarStorage.Data
         private Timer TheTimer = null;
         private readonly CalendarStoreContext Storage;
 
-        public PeriodicCleanup()
+        public PeriodicCleanup(CalendarStoreContext storage)
         {
-            this.Storage = new CalendarStoreContext();
+            this.Storage = storage;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -48,7 +47,7 @@ namespace CalendarStorage.Data
         {
             int maxPartialSs = EnvConfig.MaxPartialSnapshots ?? 10;
             int maxFullSs = EnvConfig.MaxPartialSnapshots ?? 1;
-            int maxAge = EnvConfig.MaxSnapshotAge ?? 86400;
+            int maxAge = EnvConfig.MaxSnapshotAge ?? 10080;
             var now = DateTime.UtcNow;
 
             var toRemove = new List<CalendarSnapshot>();
@@ -123,7 +122,7 @@ namespace CalendarStorage.Data
 
         private static int GetAge(DateTime now, DateTime what)
         {
-            return (int)(now - what).TotalSeconds;
+            return (int)(now - what).TotalMinutes;
         }
     }
 }

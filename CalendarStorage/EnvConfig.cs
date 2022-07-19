@@ -12,6 +12,8 @@ namespace CalendarStorage
         public static readonly bool? DeleteEmptyOwners;
         public static readonly int? MaxPayloadLength;
         public static readonly bool? IncomingBinaryLocking;
+        public static readonly string ExporterArchivePath;
+        public static readonly string ExporterVersionPath;
 
         static EnvConfig()
         {
@@ -23,6 +25,8 @@ namespace CalendarStorage
             DeleteEmptyOwners = TryGetBool("CALAPI_DELETE_EMPTY_OWNERS");
             MaxPayloadLength = TryGetInt("CALAPI_MAX_PAYLOAD_LENGTH");
             IncomingBinaryLocking = TryGetBool("CALAPI_INCOMING_BINARY_LOCKING");
+            ExporterArchivePath = Environment.GetEnvironmentVariable("CALAPI_EXPORTER_ARCHIVE_PATH");
+            ExporterVersionPath = Environment.GetEnvironmentVariable("CALAPI_EXPORTER_VERSION_PATH");
         }
 
         private static int? TryGetInt(string keyName)

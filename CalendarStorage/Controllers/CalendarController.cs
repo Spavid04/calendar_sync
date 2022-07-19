@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CalendarStorage.Data;
 using CalendarSyncCommons;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -16,12 +14,12 @@ namespace CalendarStorage.Controllers
     public class CalendarController : Controller
     {
         private readonly ILogger<CalendarController> Logger;
-        private CalendarStoreContext Storage;
+        private readonly CalendarStoreContext Storage;
 
-        public CalendarController(ILogger<CalendarController> logger)
+        public CalendarController(ILogger<CalendarController> logger, CalendarStoreContext storage)
         {
             this.Logger = logger;
-            this.Storage = new CalendarStoreContext();
+            this.Storage = storage;
         }
 
         [HttpGet]
