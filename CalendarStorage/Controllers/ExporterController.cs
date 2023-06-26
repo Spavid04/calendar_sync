@@ -14,6 +14,8 @@ namespace CalendarStorage.Controllers
         private readonly string VersionPath;
         private bool Enabled => this.ArchivePath != null && this.VersionPath != null;
 
+        private readonly object Lock = new object();
+
         public ExporterController(ILogger<CalendarController> logger)
         {
             this.Logger = logger;
@@ -50,9 +52,12 @@ namespace CalendarStorage.Controllers
                 return NotFound();
             }
 
-            var fs = new FileStream(this.ArchivePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            this.Response.RegisterForDispose(fs);
-            return File(fs, "application/octet-stream", Path.GetFileName(this.ArchivePath));
+            lock (this.Lock)
+            {
+                var fs = new FileStream(this.ArchivePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                this.Response.RegisterForDispose(fs);
+                return File(fs, "application/octet-stream", Path.GetFileName(this.ArchivePath));
+            }
         }
     }
 }
